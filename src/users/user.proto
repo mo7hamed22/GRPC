@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package user;
+
+ service UsersService {
+  rpc CreateUser( CreateOneUser) returns ( userArray);
+  rpc FindOne (UserById) returns (User);
+  rpc FindMany(stream UserById) returns (stream User);
+}
+
+ message UserById {
+  int32 id = 1;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+}
+message CreateOneUser {
+string name =1 ;
+string email =2 ;
+
+}
+message userArray {
+repeated CreateOneUser users =1;
+}
