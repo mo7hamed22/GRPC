@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule } from '@nestjs/microservices';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { grpcClientOptions } from '../grpc-client.options';
 import { UserController } from './users.controller';
+import { JetStreamDataService } from '../jetStream/jetstreamservice';
 
 @Module({
     imports: [
@@ -10,8 +11,10 @@ import { UserController } from './users.controller';
                 name: 'USER_PACKAGE',
                 ...grpcClientOptions,
             },
+
         ]),
     ],
+    providers: [JetStreamDataService],
     controllers: [UserController],
 })
 export class UserModule { }

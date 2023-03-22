@@ -5,6 +5,7 @@ import { UserById } from './interfaces/userById.interface';
 import { Observable, ReplaySubject, Subject, toArray } from 'rxjs';
 import { User } from './interfaces/user.interface';
 import { CreateOneUser } from './interfaces/createUser';
+import { JetStreamDataService } from '../jetStream/jetstreamservice';
 
 interface UsersService {
     findOne(data: UserById): Observable<User>;
@@ -18,7 +19,9 @@ export class UserController implements OnModuleInit {
     ];
     public newUsers: any = { users: [] }
     private userService: UsersService
-    constructor(@Inject('USER_PACKAGE') private readonly client: ClientGrpc) { }
+    constructor(@Inject('USER_PACKAGE') private readonly client: ClientGrpc
+        , private readonly jetStream: JetStreamDataService
+    ) { }
     onModuleInit() {
         this.userService = this.client.getService<UsersService>('UsersService');
     }
@@ -28,29 +31,28 @@ export class UserController implements OnModuleInit {
         const newArray = { ...this.newUsers }
         console.log("her.......");
         console.log("data", data);
+        this.jetStream.CreateStream("UserObject", "userData");
+        // this.jetStream.
+        // this.jetStream.Publish("userData", data)
+        // console.log("===>", newArray)
 
-        console.log("===>", newArray);
         return newArray
     }
     @GrpcMethod('UsersService', 'FindOne')
-    findOne(data: UserById): User {
-        return this.items.find(({ id }) => id === data.id)
-    }
+    // findOne(data: UserById): User {
+    //    return this.items.find() 
+    // }
     @GrpcStreamMethod('UsersService', 'FindMany')
     findMany(data$: Observable<UserById>): Observable<User> {
-        console.log("her.......");
+        console.log("her.......")
         console.log("data", data$);
-
-
         const user$ = new Subject<User>();
-
         const onNext = (userById: UserById) => {
             const item = this.items.find(({ id }) => id === userById.id);
             console.log(item);
             user$.next(item)
         };
         const onComplete = () => user$.complete();
-
         data$.subscribe({
             next: onNext,
             complete: onComplete

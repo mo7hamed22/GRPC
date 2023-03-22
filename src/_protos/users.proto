@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package users;
+
+service UserService {
+  rpc Create(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc Read(ReadUserRequest) returns (ReadUserResponse) {}
+  rpc Update(UpdateUserRequest) returns (UpdateUserResponse) {}
+  rpc Delete(DeleteUserRequest) returns (DeleteUserResponse) {}
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+}
+
+message CreateUserRequest {
+  User user = 1;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message ReadUserRequest {
+  string id = 1;
+}
+
+message ReadUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  User user = 1;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {}
